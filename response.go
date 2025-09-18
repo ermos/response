@@ -4,10 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 )
-
-type ErrorCode int
 
 type ErrorResponse struct {
 	Code    string `json:"code"`
@@ -26,7 +23,7 @@ func Success[T any](w http.ResponseWriter, status int, content T) {
 	}
 }
 
-func Error(w http.ResponseWriter, status int, code ErrorCode, message interface{}) {
+func Error(w http.ResponseWriter, status int, code string, message interface{}) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(status)
 
@@ -42,7 +39,7 @@ func Error(w http.ResponseWriter, status int, code ErrorCode, message interface{
 	}
 
 	err := json.NewEncoder(w).Encode(ErrorResponse{
-		Code:    strconv.Itoa(int(code)),
+		Code:    code,
 		Message: messageString,
 	})
 	if err != nil {
@@ -50,35 +47,35 @@ func Error(w http.ResponseWriter, status int, code ErrorCode, message interface{
 	}
 }
 
-func InternalServerError(w http.ResponseWriter, code ErrorCode, err error) {
+func InternalServerError(w http.ResponseWriter, code string, err error) {
 	Error(w, http.StatusInternalServerError, code, err)
 }
 
-func BadRequest(w http.ResponseWriter, code ErrorCode, err error) {
+func BadRequest(w http.ResponseWriter, code string, err error) {
 	Error(w, http.StatusBadRequest, code, err)
 }
 
-func Unauthorized(w http.ResponseWriter, code ErrorCode, err error) {
+func Unauthorized(w http.ResponseWriter, code string, err error) {
 	Error(w, http.StatusUnauthorized, code, err)
 }
 
-func Forbidden(w http.ResponseWriter, code ErrorCode, err error) {
+func Forbidden(w http.ResponseWriter, code string, err error) {
 	Error(w, http.StatusForbidden, code, err)
 }
 
-func NotFound(w http.ResponseWriter, code ErrorCode, err error) {
+func NotFound(w http.ResponseWriter, code string, err error) {
 	Error(w, http.StatusNotFound, code, err)
 }
 
-func Conflict(w http.ResponseWriter, code ErrorCode, err error) {
+func Conflict(w http.ResponseWriter, code string, err error) {
 	Error(w, http.StatusConflict, code, err)
 }
 
-func TooManyRequests(w http.ResponseWriter, code ErrorCode, err error) {
+func TooManyRequests(w http.ResponseWriter, code string, err error) {
 	Error(w, http.StatusTooManyRequests, code, err)
 }
 
-func ServiceUnavailable(w http.ResponseWriter, code ErrorCode, err error) {
+func ServiceUnavailable(w http.ResponseWriter, code string, err error) {
 	Error(w, http.StatusServiceUnavailable, code, err)
 }
 
