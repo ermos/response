@@ -11,12 +11,9 @@ type ErrorResponse struct {
 	Message string `json:"message"`
 }
 
-func Success[T any](w http.ResponseWriter, status int, content T) {
-	w.WriteHeader(status)
-	if content == nil {
-		return
-	}
+func Success(w http.ResponseWriter, status int, content any) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(status)
 
 	if err := json.NewEncoder(w).Encode(content); err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
